@@ -16,7 +16,6 @@ class NewsViewmodel() : ViewModel() {
     var netWorkStatus = MutableLiveData<String>("Loading")
     private var _news = MutableLiveData<List<Article>>()
     val news: LiveData<List<Article>> get() = _news
-
     private var _news2 = MediatorLiveData<List<Article>>()
     val news2: LiveData<List<Article>> get() = _news2
 

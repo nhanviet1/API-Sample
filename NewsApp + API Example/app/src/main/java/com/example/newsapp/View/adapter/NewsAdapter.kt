@@ -16,12 +16,17 @@ class NewsAdapter(
 ) : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
         fun bindData(data: Article, position: Int) {
             val binding = NewsItemLayoutBinding.bind(itemView)
             binding.tvTitle.setText(data.title)
+
             val res = itemView.context
             val ImageView = binding.ivPicture
+            //tool biến url sang ảnh để gán cho view
             Glide.with(res).load(data.urlToImage).into(ImageView)
+
+            //dùng để click vào từng item
             binding.root.setOnClickListener {
                 callback.onClickItem(item = data, position)
             }
@@ -33,15 +38,18 @@ class NewsAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        //Gán view của item_layout cho adapter
         return ViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.news_item_layout, parent, false)
         )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        //truyền dữ liệu cho cái ViewHolder
         holder.bindData(listNews[holder.bindingAdapterPosition], position)
     }
 
+    //
     override fun getItemCount(): Int {
         return listNews.size
     }
