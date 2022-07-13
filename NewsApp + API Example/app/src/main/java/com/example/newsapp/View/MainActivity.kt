@@ -1,16 +1,21 @@
 package com.example.newsapp.View
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Rect
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.viewModels
+import androidx.core.app.ActivityCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +23,8 @@ import com.example.newsapp.Model2.Article
 import com.example.newsapp.View.adapter.NewsAdapter
 import com.example.newsapp.Viewmodel.NewsViewmodel
 import com.example.newsapp.databinding.ActivityMainBinding
+import com.example.newsapp.gone
+import com.example.newsapp.visible
 
 
 class MainActivity : AppCompatActivity() {
@@ -39,9 +46,9 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     private fun setupView() {
 
-        viewModel.news.observe(this) {
+        viewModel.news2.observe(this) {
+            Log.d("Lmeow", "${it}")
             newsList.addAll(it)
-
             adapter = NewsAdapter(newsList, object : NewsAdapter.Callback {
                 override fun onClickItem(item: Article, position: Int) {
                     val intent = Intent(this@MainActivity, NewsDetailActivity::class.java)
@@ -56,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         }
         binding.buttonSearch.setOnClickListener {
             searchNews()
+//            callHotline()
         }
         binding.history.setOnClickListener {
             val intent = Intent(this@MainActivity, HistoryActivity::class.java)
@@ -67,20 +75,20 @@ class MainActivity : AppCompatActivity() {
     private fun checkNetwork(){
         viewModel.netWorkStatus.observe(this){
             if (it == "Loading"){
-                binding.root.isGone
+                binding.progressBar2.visible()
             } else if (it == "Success"){
-                binding.root.isVisible
+                binding.progressBar2.gone()
             }
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun searchNews(){
         newsList.clear()
         val searchTitle = binding.search.text.toString()
-        viewModel.news.observe(this){
+        viewModel.news2.observe(this){
             if (searchTitle.isEmpty()){
                 newsList.addAll(it)
-                //notifyDataSetChanged() -> thông báo cho adapter dữ liệu đầu vào thay đổi
                 adapter.notifyDataSetChanged()
             } else {
                 it.forEach{
@@ -92,6 +100,31 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun callHotline() {
+        Log.d("Hotline", "HEHE 1")
+        try {
+            if (ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.CALL_PHONE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                Log.d("Hotline", "HEHE 2")
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.CALL_PHONE),
+                    1212
+                )
+            }else{
+                Log.d("Hotline", "HEHE 3")
+                val callIntent = Intent(Intent.ACTION_DIAL)
+                callIntent.data = Uri.parse("tel:${1234}")
+                startActivity(callIntent)
+            }
+        } catch (e: Exception) {
+//            LogUtil.T(e.toString())
+        }
+    }
+
 
 
 
@@ -111,6 +144,6 @@ class MainActivity : AppCompatActivity() {
         }
         return super.dispatchTouchEvent(event)
     }
-    protected open fun hideKeyboardOnTouchOutside() = true
+    protected fun hideKeyboardOnTouchOutside() = true
 
 }
