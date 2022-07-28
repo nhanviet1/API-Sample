@@ -1,6 +1,7 @@
 package com.example.newsapp
 
 import com.example.newsapp.Datasource.RetrofitInstance
+import com.example.newsapp.Model2.ABC
 import com.example.newsapp.Model2.ErrorResponse
 import com.google.gson.GsonBuilder
 import okhttp3.ResponseBody

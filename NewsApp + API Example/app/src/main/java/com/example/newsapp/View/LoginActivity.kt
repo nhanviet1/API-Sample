@@ -20,30 +20,16 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        binding.LoginButton.setOnClickListener {
-            login()
-            if (checkLogin == true){
-                Toast.makeText(this, "Invalid Information, try again!", Toast.LENGTH_SHORT).show()
-            }
-        }
+        setupView()
     }
 
-    private fun login(){
-        val userName = binding.userName.text.toString()
-        val password = binding.password.text.toString()
+    private fun setupView(){
+        binding.LoginButton.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
 
-        run {
-            FakeListLogin().getData().forEach {
-                if (it.userName == userName && it.password == password){
-                    checkLogin = false
-                    startActivity(Intent(this, MainActivity::class.java))
-                    return@run //break
-                } else {
-                    Toast.makeText(this, "Invalid Information, try again!", Toast.LENGTH_SHORT).show()
-                    checkLogin = true
-                }
-            }
+        binding.LoginButton2.setOnClickListener {
+            startActivity(Intent(this, MainActivity2::class.java))
         }
     }
 

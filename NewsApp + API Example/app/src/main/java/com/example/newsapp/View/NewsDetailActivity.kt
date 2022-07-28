@@ -30,10 +30,12 @@ class NewsDetailActivity : AppCompatActivity() {
         }
 
         viewModel.news2.observe(this) {
-            it.forEach {
-                if (it.title.lowercase() == title!!.lowercase()) {
-                    Glide.with(this).load(it.urlToImage).into(binding.picture)
-                    binding.content.text = it.content
+            if (it != null) {
+                it.forEach {
+                    if (it.title.lowercase() == title!!.lowercase()) {
+                        Glide.with(this).load(it.urlToImage).into(binding.picture)
+                        binding.content.text = it.content
+                    }
                 }
             }
         }

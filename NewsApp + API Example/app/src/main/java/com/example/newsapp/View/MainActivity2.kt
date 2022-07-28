@@ -11,55 +11,49 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.newsapp.Model1.Article2
 import com.example.newsapp.Model2.Article
+import com.example.newsapp.View.adapter.Adapter2
 import com.example.newsapp.View.adapter.NewsAdapter
 import com.example.newsapp.Viewmodel.NewsViewmodel
-import com.example.newsapp.databinding.ActivityMainBinding
+import com.example.newsapp.databinding.ActivityLoginBinding
+import com.example.newsapp.databinding.ActivityMain2Binding
 import com.example.newsapp.gone
 import com.example.newsapp.visible
 
-
-class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var adapter: NewsAdapter
+class MainActivity2 : AppCompatActivity() {
+    private lateinit var binding: ActivityMain2Binding
+    private lateinit var adapter: Adapter2
     private val viewModel: NewsViewmodel by viewModels()
-    private var newsList = ArrayList<Article>()
+    private var newsList = ArrayList<Article2>()
     private var history = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMain2Binding.inflate(layoutInflater)
         setContentView(binding.root)
+        viewModel.getNews2()
         checkNetwork()
         setupView()
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setupView() {
-        viewModel.newsX.observe(this) {
+        viewModel.news3.observe(this) {
             if (it != null) {
-                Log.d("Lmeow X", "Sure value ${it.size}")
-            }
-        }
-
-        viewModel.news2.observe(this) {
-            if (it != null) {
-                Log.d("Lmeow", "${it.size}")
+                Log.d("Lmeow News2", "${it.size}")
                 newsList.addAll(it)
-                adapter = NewsAdapter(newsList, object : NewsAdapter.Callback {
-                    override fun onClickItem(item: Article, position: Int) {
-                        val intent = Intent(this@MainActivity, NewsDetailActivity::class.java)
-                        history.add(item.title)
-                        intent.putExtra("title", item.title)
-                        startActivity(intent)
+                adapter = Adapter2(newsList, object : Adapter2.Callback {
+                    override fun onClickItem(item: Article2, position: Int) {
+//                        val intent = Intent(this@MainActivity2, NewsDetailActivity::class.java)
+//                        history.add(item.title)
+//                        intent.putExtra("title", item.title)
+//                        startActivity(intent)
                     }
                 })
                 binding.rvNews.layoutManager = LinearLayoutManager(this)
@@ -71,7 +65,7 @@ class MainActivity : AppCompatActivity() {
 //            callHotline()
         }
         binding.history.setOnClickListener {
-            val intent = Intent(this@MainActivity, HistoryActivity::class.java)
+            val intent = Intent(this, HistoryActivity::class.java)
             intent.putExtra("list", history)
             startActivity(intent)
         }
@@ -91,7 +85,7 @@ class MainActivity : AppCompatActivity() {
     private fun searchNews() {
         newsList.clear()
         val searchTitle = binding.search.text.toString()
-        viewModel.news2.observe(this) {
+        viewModel.news3.observe(this) {
             if (searchTitle.isEmpty()) {
                 newsList.addAll(it)
                 adapter.notifyDataSetChanged()
@@ -150,5 +144,4 @@ class MainActivity : AppCompatActivity() {
     }
 
     protected fun hideKeyboardOnTouchOutside() = true
-
 }
